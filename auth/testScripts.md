@@ -3,12 +3,20 @@
 SYS_ADMIN может выполнять любые действия в настройкой прав доступа.
 
 1. Добавляем 1 запись в БД в таблицу acc_tenants ( 0, 'ROOT'); Для ссылочной целостности.
-2. Добавить запись ROOT в acc_accounts ( id = 0, parent_id = null, account_type = 'ROOT', tid = 0 )
+2. Добавить запись ROOT в acc_accounts ( id = 0, parent_id = null, account_type = 'TENANT', tid = 0 )
 3. Admin будет работать через какоето приложение. Поэтому нужно добавить строку в acc_clients
 Например ( tid = 0, name = 'Adminka', client_id = 'ADMINKA' ( это client_id, которое потом придет из Кейклоки )
 4. Добавить запись в ACC_LOGINS (tid = 0, id = sequence, user_login = admin_email )
-5. Добавить запись в acc_account_logins( tid = 0, client_id = 0, account_id = 0 (экаунт рута), user_login = admin_email, user_role = 'SYS_ADMIN' )
+5. Добавить запись в acc_account_logins( tid = 0, client_id = 1, account_id = 0 (экаунт рута), user_login = admin_email, user_role = 'SYS_ADMIN' )
 
+```
+acc_tenant (id=0, name='ROOT')
+acc_account(tid=0, cid=null, id=0, account_type='TENANT', parent_id=null)
+acc_client (tid=0, id=1, client_id = 'ADMINKA', name = 'Adminka')
+acc_account(tid=0, cid=1, id=1, account_type='CLIENT', parent_id=0)
+acc_logins( tid=0, user_login=admin_email )
+acc_account_logins ( tid=0, cid=1, account_id=0, user_login=admin_email, user_role='SYS_ADMIN', is_default=true); 
+```
 Осталось добавить IdP, добавить в нем учетка админа и client_id.
 После этого с этим токеном можно ходить а АПИ.
 ```
