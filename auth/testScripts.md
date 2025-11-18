@@ -26,9 +26,14 @@ jwt.user_login=admin_email
 jwt.clinet_id='ADMINKA'
 ```
 Получим такие данные. 
-1. Проверяем что в текущем тенанте есть такая учетка. Таблица acc_logins where tid = X-Tenant-Id and user_login = jwt.user_login
-2. Проверяем что есть такой клиент в этом тенанте и получаем id клиента. Таблица acc_clinets 
-select id from acc_clinet where tid = X-Tenant-Id and client_id = jwt.client_id
+1. Проверяем что в текущем тенанте есть такая учетка. 
+```
+select * from acc_logins where tid = X-Tenant-Id and user_login = jwt.user_login
+```
+2. Проверяем что есть такой клиент в этом тенанте и получаем id клиента. Таблица acc_clinets
+``` 
+select id from acc_clients where tid = X-Tenant-Id and client_id = jwt.client_id
+```
 3. Считаем что acc_clinet.id и его acc_account.id совпадают. Так проще администрировать. Этого можно добится при добавлении записи.
 Проверяем роль по таблице acc_account_roles.
 ```
