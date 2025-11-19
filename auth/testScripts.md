@@ -66,12 +66,12 @@ jwt.clinet_id='ADMINKA'
 4. Добавить запись в acc_accounts ( tid=tenant_id, cid=10, account_type=CLIENT )
 
 ### АПИ интеграция без создания учеток пользователей
-5. Добавить запись в acc_account(tid=tenant_id, cid=10, account_type=ACCOUNT, parent_id=id из пункта 4)
-6. Обновить запись из п4. установить default_account_id = id из пунка 5
+На этом все
 
 ### Интеграция с фронтом, будут создаваться учетки пользователей
-5. Добавить учетка в Acc_login ( с ролью GROUP_ADMIN )
-6. Добавить запись в acc_account_login ( логин из п 5, и cid созданного клиента )
+5. Добавить запись в acc_account(tid=tenant_id, cid=10, account_type=ACCOUNT, parent_id=id из пункта 4)
+6. Добавить учетка в Acc_login ( с ролью GROUP_ADMIN )
+7. Добавить запись в acc_account_login ( логин из п 5, и cid созданного клиента )
 
 
 <table>
@@ -99,15 +99,16 @@ X-Tenant-Id из acc_user_accounts
 ### Запрос через АПИ без user (только продажа полисов)
 ```
 jwt.clinet_id='SRAVNI_RU'
-X-Tenant-Id - из header или url 
-
+X-Tenant-Id - из url 
 X-Account-Id из таблицы acc_accounts по tenant_id и client_id
+select id from acc_accounts where tid = X-Tenant-Id and cid = jwt.clinet_id
+При такой модели должна быть только 1 запись в acc_accounts
 ```
 ### Запрос через АПИ
 ```
 jwt.user_login=user_email
 jwt.clinet_id='SRAVNI_RU'
-X-Tenant-Id - из header или url 
+X-Tenant-Id - из header
 
 X-Account-Id из header или таблицы acc_account_logins по tenant_id и client_id и user_login
 ```
