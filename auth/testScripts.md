@@ -82,3 +82,34 @@ jwt.clinet_id='ADMINKA'
   <tr><td>Account, Token, Sub (CRUD)</td><td>yes</td><td>yes, только для своего tenant-id</td><td>yes, только для своей группы</td></tr>
 
 </table>
+
+## Примеры 
+Для примера есть 2 tenants - VSK (страховые продукты) и MSG (сервисные услуги)
+Варианты передачи
+1. header x-tenant-id
+2. url {base_url}/tnt_code/API - www.base.ru/pt/v2/**VSK**/policies или www.base.ru/pt/v2/**MSG**/policies
+   
+### Запрос через нашу админку
+```
+jwt.user_login=admin_email_2
+jwt.clinet_id='ADMINKA'
+X-Account-Id или isPrimary из acc_user_accounts ( если вернет больше 1 строки то ошибка. нужно указать явно X-Account-Id )
+X-Tenant-Id из acc_user_accounts
+```
+### Запрос через АПИ без user (только продажа полисов)
+```
+jwt.clinet_id='SRAVNI_RU'
+X-Tenant-Id - из header или url 
+
+X-Account-Id из таблицы acc_accounts по tenant_id и client_id
+```
+### Запрос через АПИ
+```
+jwt.user_login=user_email
+jwt.clinet_id='SRAVNI_RU'
+X-Tenant-Id - из header или url 
+
+X-Account-Id из header или таблицы acc_account_logins по tenant_id и client_id и user_login
+```
+
+
