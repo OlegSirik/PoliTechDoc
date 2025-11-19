@@ -9,6 +9,13 @@ SYS_ADMIN может выполнять любые действия в наст�
 4. Добавить запись в ACC_LOGINS (tid = 0, id = sequence, user_login = admin_email )
 5. Добавить запись в acc_account_logins( tid = 0, client_id = 1, account_id = 0 (экаунт рута), user_login = admin_email, user_role = 'SYS_ADMIN' )
 
+~~~
+ACC_ACCOUNT (id=0, parent_id=null, name='ROOT', account_type='TENANT', tid = 0)         ------> TENANT (id=0,name='ROOT')       
+  │
+  └── ACC_ACCOUNT (id=1, parent_id=0, name='Adminka', account_type='CLIENT', tid = 0)   ------> CLIENT ( tid = 0, name = 'Adminka', client_id='ADMINKA')
+      │
+      └── ACCOUNT_LOGIN (tid = 0, client_id = 1, account_id = 0, user_login = admin_email, user_role = 'SYS_ADMIN') ---> LOGINS (tid=0, user_login=user_email)
+~~~
 ```
 acc_tenant (id=0, name='ROOT')
 acc_account(tid=0, cid=null, id=0, account_type='TENANT', parent_id=null)
@@ -58,6 +65,13 @@ jwt.clinet_id='ADMINKA'
 Получим такие данные. 
 Проделав все проверки из (Добавить SYS_ADMIN) мы должны получить роль = 'TNT_ADMIN'
 Обладая такой ролью, можно делать все что ниже -
+~~~
+ACC_ACCOUNT (id=10, parent_id=null, name='VSK', account_type='TENANT', tid = 0)         ------> TENANT (id=10,name='VSK')       
+  │
+  └── ACC_ACCOUNT (id=11, parent_id=10, name='Adminka', account_type='CLIENT', tid = 10)   ------> CLIENT ( tid = 10, name = 'Adminka', client_id='ADMINKA')
+      │
+      └── ACCOUNT_LOGIN (tid = 10, client_id = 11, account_id = 10, user_login = admin_email, user_role = 'TNT_ADMIN') ---> LOGINS (tid=10, user_login=user_email)
+~~~
 
 ## Новый Client
 1. Пользователь с ролью SYS_ADMIN(tenant из header) или TENANT_ADMIN (того же тенанта)
@@ -68,11 +82,30 @@ jwt.clinet_id='ADMINKA'
 ### АПИ интеграция без создания учеток пользователей
 На этом все
 
+~~~
+ACC_ACCOUNT (id=10, parent_id=null, name='VSK', account_type='TENANT', tid = 0)         ------> TENANT (id=10,name='VSK')       
+  │
+  └── ACC_ACCOUNT (id=12, parent_id=10, name='SRAVNI-RU', account_type='CLIENT', tid = 10)   ------> CLIENT ( tid = 10, name = 'SRAVNI-RU', client_id='Sravni.RU', default_account_id=13)
+      │
+      └── ACC_ACCOUNT (id=13, parent_id=12, name='SRAVNI-RU Account', account_type='ACCOUNT', tid = 10)
+~~~
+
 ### Интеграция с фронтом, будут создаваться учетки пользователей
 5. Добавить запись в acc_account(tid=tenant_id, cid=10, account_type=ACCOUNT, parent_id=id из пункта 4)
 6. Добавить учетка в Acc_login ( с ролью GROUP_ADMIN )
 7. Добавить запись в acc_account_login ( логин из п 5, и cid созданного клиента )
 
+~~~
+ACC_ACCOUNT (id=10, parent_id=null, name='VSK', account_type='TENANT', tid = 0)         ------> TENANT (id=10,name='VSK')       
+  │
+  └── ACC_ACCOUNT (id=22, parent_id=10, name='SRAVNI-RU-2', account_type='CLIENT', tid = 10)   ------> CLIENT ( tid = 10, name = 'SRAVNI-RU-2', client_id='Sravni.RU.Ru')
+      │
+      └── ACC_ACCOUNT (id=23, parent_id=22, name='Страхование животных', account_type='ACCOUNT', tid = 10)
+            │
+            └── ACCOUNT_LOGIN (tid = 10, client_id = 22, account_id = 23, user_login = sale_email1, user_role = 'SALE') ---> LOGINS (tid=10, user_login=sale_email1)
+            │
+            └── ACCOUNT_LOGIN (tid = 10, client_id = 22, account_id = 23, user_login = sale_email2, user_role = 'SALE') ---> LOGINS (tid=10, user_login=sale_email2)
+~~~
 
 <table>
   <tr><td>Действие</td><td>SYS_ADMIN</td><td>TNT_ADMIN</td><td>GRP_ADMIN</td></tr>
