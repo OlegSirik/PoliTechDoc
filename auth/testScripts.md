@@ -87,7 +87,7 @@ jwt.clinet_id='ADMINKA'
 Для примера есть 2 tenants - VSK (страховые продукты) и MSG (сервисные услуги)
 Варианты передачи
 1. header x-tenant-id
-2. url {base_url}/tnt_code/API - www.base.ru/pt/v2/**VSK**/policies или www.base.ru/pt/v2/**MSG**/policies
+2. url {base_url}/tnt_code/API - ww.base.ru/pt/v2/__VSK__/policies или ww.base.ru/pt/v2/**MSG**/policies
    
 ### Запрос через нашу админку
 ```
