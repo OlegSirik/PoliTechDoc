@@ -125,3 +125,78 @@ PAID - оплаченный договор
 Эвакуатор, замена колес, помощь оценщика и т.д.
 Опция содержит код, наименование, категорию (если большой список, по категории можно сгруппировать на UI) и стоимость.
 
+
+# Хранение
+uuid - уникальный ИД записи.    
+policy_data_uuid ссылка на данные договора. Данные могут не менятся, только статус
+draft_id - генерится при создании первой версии и далее не меняется.   
+policy_nr - генерится до оплаты.    
+version_nr - номер ревизии. ( version_nr & draft_id уникальны )   
+business_version_nr - юридическая версия договора   
+status ( WIP / ISSUED ) статус выерсии - в работе или выпущена   
+top_version_wip ( bool ) - указатель на последнюю тех версию договора.   
+top_version_issued ( bool ) - указатель на последнюю версию договора.   
+
+## Текущая версия в проде
+~~~
+select * from policy_index where draft_id = :draft_id and top_version_issued = true
+~~~
+## Текущая версия в работе
+~~~
+select * from policy_index where draft_id = :draft_id and top_version_wip = true
+~~~
+
+## 1. Новый договор
+new - in_payment - paid 
+                   error 
+~~~
+draft_id = 123
+policy_nr = 22TTT999
+version_nr = 1
+business_version_nr = 0
+status = 'WIP'
+top_version_wip = true
+top_version_issued = false
+policy_status = 'NEW'
+~~~
+
+## 2. Ожидает оплаты
+Договор фактически выпущен
+~~~
+draft_id = 123
+policy_nr = 22TTT999
+version_nr = 2
+business_version_nr = 0
+status = 'ISSUED'
+top_version_wip = false
+top_version_issued = true
+policy_status = 'IN_PAYMENT'
+~~~
+
+## 3.1. Оплачен
+~~~
+draft_id = 123
+policy_nr = 22TTT999
+version_nr = 3
+business_version_nr = 0
+status = 'ISSUED'
+top_version_wip = false
+top_version_issued = true
+policy_status = 'PAID'
+~~~
+## 3.2. Ошибка
+~~~
+draft_id = 123
+policy_nr = 22TTT999
+version_nr = 3
+business_version_nr = 0
+status = 'WIP'
+top_version_wip = true
+top_version_issued = false
+policy_status = 'ERROR'
+~~~
+
+## Создать допник
+Получить тек. бизнес версию (select business_version_nr from policy_index where top_version_issued = true)
+Проверить что уже не создана версия WIP (select * from policy_index where business_version_nr = :business_version_nr and top_version_wip = true)
+Если нет, то создать новую, иначе ошибка.
