@@ -52,6 +52,7 @@ public class TokenClaims {
 | Тип аккаунта | Системная роль | Уровень доступа |
 | ------------ | -------------- | --------------- |
 | ROOT         | SYS\_ADMIN     | Системный       |
+| TENANT       | TNT\_ADMIN     | Tenant (Раздел) |
 | CLIENT       | CLIENT\_ADMIN  | Клиентский      |
 | GROUP        | GROUP\_ADMIN   | Групповой       |
 | ACCOUNT      | SALES          | Операционный    |
@@ -66,7 +67,9 @@ public class TokenClaims {
 ```
 ROOT (SYS_ADMIN)
 │
-└── CLIENT (CLIENT_ADMIN)
+└ TENANT (TNT_ADMIN)
+  │
+  └ CLIENT (CLIENT_ADMIN)
     │
     └── GROUP (GROUP_ADMIN)
         │
