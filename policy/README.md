@@ -8,12 +8,8 @@
   "draftId": "string",
   "policyNumber": "string",
   "previousPolicyNumber": "string",
-  "product": {
-    "code": "string"
-  },
-  "status": {
-    "code": "NEW"
-  },
+  "product": "string",
+  "status": "NEW",
   "startDate": "string",
   "endDate": "string",
   "issueDate": "string",
