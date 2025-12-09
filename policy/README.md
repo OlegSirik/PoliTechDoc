@@ -17,6 +17,8 @@
   "startDate": "string",
   "endDate": "string",
   "issueDate": "string",
+  "waitingPeriod": "P16D",
+  "policyTerm": "P100D",
   "createDate": "string",
   "premium": 1000,
   "placeOfIssue": "string",
@@ -37,7 +39,8 @@
     "endDate": "string",
     "sumInsured": 1000,
     "premium": 1000,
-    "deductible": 100
+    "deductibleNr": 2,
+    "deductible": "10% со вторго страхового случая"
   }],
 
   "insuredObjects": [
