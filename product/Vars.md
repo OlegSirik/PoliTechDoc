@@ -34,3 +34,13 @@ varDataType - NUMBER | STRING | DATE | DURATION
 varName - наименование
 varPath - для jsonPath для получения значения. Может быть в IN и VAR
 varValue - значение. Для const - значение константы, в процессе расчета хранит значения, в справочнике значения для составления примера.
+varCategory - группа для отобрачения
+varNr - номер строки внутри группы
+
+Type
+lobVar
+Методы
+getLobVars(lobCode string) [] список всего по коду LoB
+getPolicyVars([]) []
+getPhVars([]) []
+getIoVars([])[]
