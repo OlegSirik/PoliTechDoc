@@ -41,6 +41,26 @@ Type
 lobVar
 Методы
 getLobVars(lobCode string) [] список всего по коду LoB
-getPolicyVars([]) []
-getPhVars([]) []
+
+LoB морда -
+getPolicyVars() = policyVars( filter varType = IN, MAGIC )
+getPhTypes () 
+getPhVars( person | organization ) starts with 'Ph.'
+getIoTypes()
 getIoVars([])[]
+addPhAditionalVar
+addIoAditionalVar
+
+Product
+  Model
+    deleteVar
+getNewVars (model, lob) - 
+
+Calculator
+
+
+
+
+
+
+
