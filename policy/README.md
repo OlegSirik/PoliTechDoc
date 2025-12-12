@@ -9,6 +9,7 @@
   "policyNumber": "string",
   "previousPolicyNumber": "string",
   "product": "string",
+  "productVersNo": "string", 
   "status": "NEW",
   "startDate": "string",
   "endDate": "string",
