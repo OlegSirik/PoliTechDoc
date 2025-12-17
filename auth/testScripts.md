@@ -118,9 +118,7 @@ ACC_ACCOUNT (id=10, parent_id=null, name='VSK', account_type='TENANT', tid = 0) 
 
 ## Примеры 
 Для примера есть 2 tenants - VSK (страховые продукты) и MSG (сервисные услуги)
-Варианты передачи
-1. header x-tenant-id
-2. url {base_url}/tnt_code/API - ww.base.ru/pt/v2/__VSK__/policies или ww.base.ru/pt/v2/**MSG**/policies
+url {base_url}/tnt_code/API - ww.base.ru/pt/v2/__VSK__/policies или ww.base.ru/pt/v2/**MSG**/policies
    
 ### Запрос через нашу админку
 ```
@@ -146,4 +144,23 @@ X-Tenant-Id - из header
 X-Account-Id из header или таблицы acc_account_logins по tenant_id и client_id и user_login
 ```
 
+## Login
+
+### Свой JWT
+Данные для логина 
+```
+/tenantCode/ - из url
+body -  
+{client,
+login
+password}
+```
+
+1. Проверить наличие логина по (tenant, login)
+2. Проверить пароль
+3. По client_id получить account_id по ( tenant, client.id, account_type='CLIENT' )
+
+### VSK keycloak
+1. Получить токен ( client_id, secret )
+2. Для авторизации запроса взять тенант из url, взять client_id из jwt, проверит что есть такая пара и она не залочена. (is_delete = true)
 
