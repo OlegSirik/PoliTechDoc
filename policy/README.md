@@ -43,6 +43,7 @@
   "insuredObjects": [
     {
       "ioType": "Person",
+      "liabilityLimit": "10000", лимит отвественности по объекту страхования
       "objectId": "string",
       "person": {},
     },
