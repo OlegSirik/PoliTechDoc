@@ -200,3 +200,390 @@ policy_status = 'ERROR'
 Получить тек. бизнес версию (select business_version_nr from policy_index where top_version_issued = true)
 Проверить что уже не создана версия WIP (select * from policy_index where business_version_nr = :business_version_nr and top_version_wip = true)
 Если нет, то создать новую, иначе ошибка.
+
+
+Полный состав полей договора
+```
+{
+  "draftId": "string",
+  "previousPolicyNumber": "string",
+  "productCode": "string",
+  "waitingPeriod": "string",
+  "policyTerm": "string",
+  "startDate": "string",
+  "endDate": "string",
+  "issueDate": "string",
+  "issueTimezome": "string",
+  "installmentType": "string",
+  "insurer": {
+    "person": {
+      "firstName": "string",
+      "lastName": "string",
+      "middleName": "string",
+      "birthDate": "string",
+      "fullName": "string",
+      "fullNameEn": "string",
+      "birthPlace": "Москва",
+      "citizenship": "RU",
+      "gender": "string",
+      "familyState": "SINGLE",
+      "isPublicOfficial": true,
+      "isResident": true,
+      "ext_id": "string"
+    },
+    "contacts": {
+      "phone": "string",
+      "email": "user@example.com",
+      "telegram": "string"
+    },
+    "identifiers": [
+      {
+        "isPrimary": false,
+        "typeCode": "string",
+        "serial": "string",
+        "number": "string",
+        "dateIssue": "string",
+        "validUntil": "string",
+        "whom": "string",
+        "divisionCode": "string",
+        "ext_id": "string",
+        "countryCode": "RU",
+        "documentOwner": {
+          "firstName": "string",
+          "lastName": "string",
+          "middleName": "string",
+          "birthDate": "string",
+          "fullName": "string",
+          "fullNameEn": "string",
+          "birthPlace": "Москва",
+          "citizenship": "RU",
+          "gender": "string",
+          "familyState": "SINGLE",
+          "isPublicOfficial": true,
+          "isResident": true,
+          "ext_id": "string"
+        }
+      }
+    ],
+    "addresses": [
+      {
+        "isPrimary": false,
+        "typeCode": "REGISTRATION",
+        "countryCode": "RU",
+        "region": "г Москва",
+        "city": "Москва",
+        "street": "Академика Королева",
+        "house": "3",
+        "building": "2",
+        "flat": "25",
+        "room": "2",
+        "zipCode": "129515",
+        "kladrId": "7700000000015450062",
+        "fiasId": "f64c75cd-a640-41ed-9893-c1aaef58e638",
+        "addressStr": "129515, г.Москва, ул.Академика Королева, д.2, к.3, кв.25",
+        "addressStrEn": "129515, г.Moscow",
+        "ext_id": "string"
+      }
+    ],
+    "placeOfWork": {
+      "organization": "string",
+      "occupationType": "string",
+      "occupation": "string",
+      "address": "string",
+      "phone": "string"
+    },
+    "organization": {
+      "country": "string",
+      "inn": "string",
+      "fullName": "string",
+      "fullNameEn": "string",
+      "shortName": "string",
+      "legalForm": "OOO",
+      "kpp": "string",
+      "ogrn": "string",
+      "okpo": "string",
+      "bic": "string",
+      "isResident": true,
+      "ext_id": "string"
+    },
+    "representative": {
+      "person": {
+        "firstName": "string",
+        "lastName": "string",
+        "middleName": "string",
+        "birthDate": "string",
+        "fullName": "string",
+        "fullNameEn": "string",
+        "birthPlace": "Москва",
+        "citizenship": "RU",
+        "gender": "string",
+        "familyState": "SINGLE",
+        "isPublicOfficial": true,
+        "isResident": true,
+        "ext_id": "string"
+      },
+      "position": "Директор по продажам"
+    }
+  },
+  "policyHolder": {
+    "person": {
+      "firstName": "string",
+      "lastName": "string",
+      "middleName": "string",
+      "birthDate": "string",
+      "fullName": "string",
+      "fullNameEn": "string",
+      "birthPlace": "Москва",
+      "citizenship": "RU",
+      "gender": "string",
+      "familyState": "SINGLE",
+      "isPublicOfficial": true,
+      "isResident": true,
+      "ext_id": "string"
+    },
+    "contacts": {
+      "phone": "string",
+      "email": "user@example.com",
+      "telegram": "string"
+    },
+    "identifiers": [
+      {
+        "isPrimary": false,
+        "typeCode": "string",
+        "serial": "string",
+        "number": "string",
+        "dateIssue": "string",
+        "validUntil": "string",
+        "whom": "string",
+        "divisionCode": "string",
+        "ext_id": "string",
+        "countryCode": "RU",
+        "documentOwner": {
+          "firstName": "string",
+          "lastName": "string",
+          "middleName": "string",
+          "birthDate": "string",
+          "fullName": "string",
+          "fullNameEn": "string",
+          "birthPlace": "Москва",
+          "citizenship": "RU",
+          "gender": "string",
+          "familyState": "SINGLE",
+          "isPublicOfficial": true,
+          "isResident": true,
+          "ext_id": "string"
+        }
+      }
+    ],
+    "addresses": [
+      {
+        "isPrimary": false,
+        "typeCode": "REGISTRATION",
+        "countryCode": "RU",
+        "region": "г Москва",
+        "city": "Москва",
+        "street": "Академика Королева",
+        "house": "3",
+        "building": "2",
+        "flat": "25",
+        "room": "2",
+        "zipCode": "129515",
+        "kladrId": "7700000000015450062",
+        "fiasId": "f64c75cd-a640-41ed-9893-c1aaef58e638",
+        "addressStr": "129515, г.Москва, ул.Академика Королева, д.2, к.3, кв.25",
+        "addressStrEn": "129515, г.Moscow",
+        "ext_id": "string"
+      }
+    ],
+    "placeOfWork": {
+      "organization": "string",
+      "occupationType": "string",
+      "occupation": "string",
+      "address": "string",
+      "phone": "string"
+    },
+    "organization": {
+      "country": "string",
+      "inn": "string",
+      "fullName": "string",
+      "fullNameEn": "string",
+      "shortName": "string",
+      "legalForm": "OOO",
+      "kpp": "string",
+      "ogrn": "string",
+      "okpo": "string",
+      "bic": "string",
+      "isResident": true,
+      "ext_id": "string"
+    },
+    "representative": {
+      "person": {
+        "firstName": "string",
+        "lastName": "string",
+        "middleName": "string",
+        "birthDate": "string",
+        "fullName": "string",
+        "fullNameEn": "string",
+        "birthPlace": "Москва",
+        "citizenship": "RU",
+        "gender": "string",
+        "familyState": "SINGLE",
+        "isPublicOfficial": true,
+        "isResident": true,
+        "ext_id": "string"
+      },
+      "position": "Директор по продажам"
+    }
+  },
+  "insuredObjects": [
+    {
+      "ioType": "Person",
+      "sumInsured": "string",
+      "packageCode": "0",
+      "coverage": [
+        {
+          "cover": {
+            "code": "string",
+            "description": "string"
+          },
+          "risk": "string",
+          "startDate": "string",
+          "endDate": "string",
+          "sumInsured": 1000,
+          "premium": 1000,
+          "deductible": {
+            "code": "string",
+            "text": "string"
+          }
+        }
+      ],
+      "objectId": "string",
+      "person": {
+        "firstName": "string",
+        "lastName": "string",
+        "middleName": "string",
+        "birthDate": "string",
+        "fullName": "string",
+        "fullNameEn": "string",
+        "birthPlace": "Москва",
+        "citizenship": "RU",
+        "gender": "string",
+        "familyState": "SINGLE",
+        "isPublicOfficial": true,
+        "isResident": true,
+        "ext_id": "string"
+      },
+      "contacts": {
+        "phone": "string",
+        "email": "user@example.com",
+        "telegram": "string"
+      },
+      "identifiers": {
+        "isPrimary": false,
+        "typeCode": "string",
+        "serial": "string",
+        "number": "string",
+        "dateIssue": "string",
+        "validUntil": "string",
+        "whom": "string",
+        "divisionCode": "string",
+        "ext_id": "string",
+        "countryCode": "RU",
+        "documentOwner": {
+          "firstName": "string",
+          "lastName": "string",
+          "middleName": "string",
+          "birthDate": "string",
+          "fullName": "string",
+          "fullNameEn": "string",
+          "birthPlace": "Москва",
+          "citizenship": "RU",
+          "gender": "string",
+          "familyState": "SINGLE",
+          "isPublicOfficial": true,
+          "isResident": true,
+          "ext_id": "string"
+        }
+      },
+      "addresses": {
+        "isPrimary": false,
+        "typeCode": "REGISTRATION",
+        "countryCode": "RU",
+        "region": "г Москва",
+        "city": "Москва",
+        "street": "Академика Королева",
+        "house": "3",
+        "building": "2",
+        "flat": "25",
+        "room": "2",
+        "zipCode": "129515",
+        "kladrId": "7700000000015450062",
+        "fiasId": "f64c75cd-a640-41ed-9893-c1aaef58e638",
+        "addressStr": "129515, г.Москва, ул.Академика Королева, д.2, к.3, кв.25",
+        "addressStrEn": "129515, г.Moscow",
+        "ext_id": "string"
+      },
+      "placeOfWork": {
+        "organization": "string",
+        "occupationType": "string",
+        "occupation": "string",
+        "address": "string",
+        "phone": "string"
+      },
+      "plaсeOfStudy": {
+        "university": "string",
+        "faculty": "string",
+        "course": "string"
+      },
+      "device": {
+        "deviceName": "string",
+        "deviceTypeCode": "string",
+        "tradeMark": "string",
+        "model": "string",
+        "serialNr": "string",
+        "licenseKey": "string",
+        "imei": "string",
+        "osName": "string",
+        "osVersion": "string",
+        "countryCode": "string",
+        "devicePrice": 0
+      },
+      "property": {
+        "propertyType": "string",
+        "cadastrNr": "77:07:0018002:2590",
+        "wallsMaterial": "Каменные, кирпичные",
+        "ceilingMaterial": "Смешанные",
+        "constructionYear": "string",
+        "repairYear": "string",
+        "buildingArea": 0,
+        "landArea": 0,
+        "wearCoefficient": 0,
+        "numberOfFloors": 0,
+        "propertyLocation": "В многоквартирном доме",
+        "isNewBuilding": "string",
+        "propertyValue": 0,
+        "commissioningDate": "string",
+        "floor": 0
+      },
+      "pet": {
+        "species": "Собака",
+        "breed": "Алабай",
+        "namePet": "Рекс",
+        "genderPet": "Самец",
+        "age": "2",
+        "distinguishingMark": "длинношёрстная собака, номер чипа: 643094100156084"
+      }
+    }
+  ],
+  "options": [
+    {
+      "code": "ROADSIDE_ASSISTANCE",
+      "name": "Помощь на дороге",
+      "category": "string",
+      "premium": 0,
+      "contractNr": "string",
+      "isSelected": true
+    }
+  ]
+}
+```
