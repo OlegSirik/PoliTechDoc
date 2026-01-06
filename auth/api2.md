@@ -78,6 +78,8 @@
 
 > Доступ: **TNT_ADMIN**, **CLIENT_ADMIN (scoped)**
 
+> **Note:** Tenant-scoped endpoints MUST NOT accept tenant override headers (`X-Impersonate-Tenant`). TenantCode from URL is authoritative.
+
 ---
 
 ## 5. Tenant Admins
@@ -106,6 +108,8 @@
 
 > Доступ: **SYS_ADMIN**
 
+> **Impersonation:** System-scoped endpoints (`/sys-admins/**`, `/tnt-admins`) MAY accept `X-Impersonate-Tenant` header to query other tenants. Allowed **only for SYS_ADMIN**. Tenant-scoped endpoints MUST reject impersonation headers.
+
 ---
 
 ## 6. Client & Group Admins
@@ -114,11 +118,6 @@
 
 * `client-admins`
 * `group-admins`
-
-**Rationale:**
-
-* единый REST‑паттерн (коллекция ресурсов)
-* консистентность с `sys-admins`, `tnt-admins`
 
 **Base:** `/api/v1/{tenantCode}/clients/{clientCode}/admins`
 
@@ -216,35 +215,126 @@
 
 ---
 
-## 11. Soft Delete Policy
+## 11. User Creation & Administration Model
 
-### Applies to:
+### 11.1 User Account Basics
 
-* tenants
-* clients
-* groups
-* logins
+* Учетная запись (**login**) всегда привязана к **одному tenant**.
+* Учетка может существовать **без ролей**.
+* Учетка **без ролей не имеет доступа** к API и UI (inactive state).
 
-### Model
+**Rationale:**
 
-* `deletedAt TIMESTAMP`
-* `deletedBy`
-
-### Behavior
-
-* `GET` — не возвращает удалённые записи
-* `POST` — не может создать ресурс с кодом soft‑deleted
-* `DELETE` — soft delete
-* `PUT` — запрещён для soft‑deleted (409)
-
-### Restore (optional)
-
-* `POST /{resource}/{code}/restore`
+* поддержка staged‑workflow (create → configure → assign roles)
+* интеграции и external provisioning
 
 ---
+
+### 11.2 User Lifecycle
+
+1. **Create account**
+
+   * создаётся login + tenantCode
+   * роли не обязательны
+
+2. **Assign roles**
+
+   * назначение ролей активирует пользователя
+   * роли определяют scope (tenant / client / group)
+
+3. **Operate**
+
+   * пользователь может выполнять действия в рамках scope
+
+4. **Deactivate / Delete**
+
+   * soft delete (см. ниже)
+
+---
+
+### 11.3 Role Assignment Rules
+
+* **SYS_ADMIN**
+
+  * может создавать пользователей в любом tenant
+  * может назначать любые роли
+
+* **TNT_ADMIN**
+
+  * может создавать пользователей в своём tenant
+  * может назначать tenant / client / group роли
+
+* **CLIENT_ADMIN**
+
+  * может создавать пользователей **только в своём clientCode**
+  * может назначать роли: `USER`, `GROUP_ADMIN`
+
+* **GROUP_ADMIN**
+
+  * не может создавать пользователей
+
+---
+
+### 11.4 External / Third‑Party Administration
+
+Поддерживаются **service accounts** и delegation‑модель.
+
+#### Option A — Service Account (Recommended)
+
+* OAuth2 Client / API Key
+* Привязан к:
+
+  * tenantCode
+  * опционально clientCode
+
+**Capabilities:**
+
+* создание учеток
+* назначение ограниченного набора ролей
+* отсутствие interactive login
+
+**Use cases:**
+
+* HR‑системы
+* CRM
+* Identity provisioning
+
+---
+
+#### Option B — Client‑Bound Delegation
+
+* внешнее приложение привязано к `clientCode`
+* доступ только к:
+
+  * `/api/v1/{tenantCode}/clients/{clientCode}/logins`
+
+**Roles:**
+
+* `CLIENT_ADMIN`
+* `USER_MANAGER` (optional future role)
+
+**Use cases:**
+
+* партнерские порталы
+* embedded admin UI
+
+---
+
+### 11.5 Recommended API Workflow
+
+```text
+POST   /api/v1/{tenantCode}/logins              -> create user (no roles)
+POST   /api/v1/{tenantCode}/clients/{clientCode}/client-admins
+POST   /api/v1/{tenantCode}/clients/{clientCode}/group-admins
+```
+
+---
+
+## 12. Soft Delete Policy
 
 ## 12. Notes
 
 * Все операции выполняются в контексте `tenantCode`.
 * Авторизация: JWT / OAuth2.
 * Рекомендуется аудит изменений ролей и scope.
+* **Impersonation headers (`X-Impersonate-Tenant`)** разрешены **только на system-scoped endpoints** и **только для SYS_ADMIN**. Tenant-scoped endpoints должны их игнорировать или возвращать 400/403.
