@@ -1,0 +1,253 @@
+ADR-009: Identity-Based Token & Externalized Execution Context
+
+Status: Accepted
+Date: 2026-01-09
+Owner: Platform Architecture
+Supersedes: ADR-008 (Context-bound tokens)
+
+1. Context
+
+The platform is a multi-tenant system with:
+
+hierarchical account tree (tenant → client → group → account)
+
+administrative and business operations
+
+multiple OAuth clients (UI, admin UI, partner integrations)
+
+mixed authentication modes (user-based and client-based)
+
+The system must support:
+
+explicit execution context selection
+
+strong isolation between tenants and clients
+
+minimal token churn
+
+compatibility with external integrations
+
+2. Decision
+2.1 Token semantics
+
+Access tokens represent authenticated identity only, not execution context.
+
+Token is bound to:
+
+tenant
+
+login (optional, depends on auth type)
+
+client_id
+
+auth_type
+
+The token does not encode account_id.
+
+2.2 Execution context
+
+Execution context is represented by an Account Node (account_id) and is:
+
+provided per request
+
+evaluated server-side
+
+never trusted blindly
+
+For user-authenticated requests, the execution context is provided via HTTP header.
+
+2.3 Authentication types
+
+The system supports two authentication modes:
+
+USER_AUTH
+
+login + password (or external IdP)
+
+represents a human user
+
+CLIENT_AUTH
+
+client_id + client_secret
+
+represents a technical integration
+
+no human user involved
+
+3. Authorization Rules (Normative)
+Rule 1 — Principal vs Execution Context
+
+Principal = authenticated identity (token)
+
+Execution Context = account node (account_id)
+
+They are evaluated together on every request.
+
+Rule 2 — USER_AUTH behavior
+
+For auth_type = USER_AUTH:
+
+account_id MUST be provided via HTTP header
+
+backend verifies:
+
+account belongs to the same tenant
+
+principal is allowed to act as this account
+
+account is allowed for this client
+
+If the header is missing or invalid → 400 / 403
+
+Rule 3 — CLIENT_AUTH behavior (default account)
+
+For auth_type = CLIENT_AUTH:
+
+execution context is implicitly derived from the client
+
+account_id headers are ignored
+
+the client has exactly one bound account node
+
+This prevents:
+
+privilege escalation
+
+context spoofing
+
+misuse of integration credentials
+
+Rule 4 — No implicit fallback for USER_AUTH
+
+For user-based authentication:
+
+there is no default account
+
+there is no last-used account
+
+context must be explicit
+
+4. Account Tree Model (Final)
+AccountNode
+-----------
+id
+tenant_id
+parent_id
+type        // BUSINESS | ADMIN
+admin_role  // null | SYS_ADMIN | TNT_ADMIN | PRODUCT_ADMIN | CLIENT_ADMIN | GROUP_ADMIN
+status
+
+
+Admin nodes are first-class nodes in the tree
+
+Authorization is based on node type and position
+
+One active node per request
+
+5. API Contract
+5.1 /me — Security Principal
+GET /api/v1/me
+
+
+Returns identity + visibility, not authority.
+
+{
+  "identity": {
+    "tenant": "tenant-a",
+    "login": "ivan",
+    "client": "admin-ui",
+    "authType": "USER_AUTH"
+  },
+
+  "availableAccounts": [
+    {
+      "id": "acc-tenant-admin",
+      "type": "ADMIN",
+      "adminRole": "TNT_ADMIN"
+    },
+    {
+      "id": "acc-sales-7781",
+      "type": "BUSINESS"
+    }
+  ]
+}
+
+
+Notes:
+
+activeAccount is optional and informational
+
+real execution context is defined per request
+
+5.2 Execution Context Header
+Header name (canonical):
+X-Account-Id: acc-123
+
+Behavior:
+Auth Type	Header Required	Header Used
+USER_AUTH	✅ yes	✅ yes
+CLIENT_AUTH	❌ no	❌ ignored
+6. Authorization Algorithm (Canonical)
+principal = parseToken(jwt)
+
+if principal.authType == CLIENT_AUTH:
+    account = client.boundAccount
+else:
+    accountId = request.header["X-Account-Id"]
+    if accountId is null:
+        reject 400
+    account = loadAccount(accountId)
+
+assert account.tenant == principal.tenant
+assert account.allowedForClient(principal.client)
+assert principal.canActAs(account)
+
+7. Error Semantics
+Situation	Status
+Missing account header (USER_AUTH)	400
+Account not visible to principal	403
+Account exists but outside tenant	404
+Header provided for CLIENT_AUTH	ignored
+8. Audit Model
+
+Each request logs:
+
+tenant
+principal.login (if any)
+client_id
+account_id (effective)
+operation
+
+
+Example:
+
+tenant=tenant-a
+client=partner-app
+auth=CLIENT_AUTH
+acting_as=acc-partner-root
+
+9. Consequences
+Positive
+
+No token re-issuance for context switching
+
+Works well with integrations
+
+Simple Angular state management
+
+Clear separation of identity vs authority
+
+Trade-offs
+
+More server-side checks per request
+
+Execution context not cryptographically bound
+
+Requires strict central authorization filter
+
+10. Final Summary
+
+Access tokens represent identity only.
+Execution context is resolved per request via account nodes.
+User-based authentication requires explicit context selection.
+Client-based authentication always uses a fixed, implicit account.
