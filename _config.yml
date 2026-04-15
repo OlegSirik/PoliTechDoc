@@ -1,0 +1,3 @@
+# _config.yml
+remote_theme: marella/jekyll-theme-documentation
+title: "Название вашего проекта"
